@@ -8,24 +8,25 @@ In the specific contract the curve is alt-bn128 but it works for any curve.
 
 ## Run
 
-* To run points addition simply run:
-
+* To run points addition simply run: 
+    ```
     function add(uint256 x0, uint256 y0,
                  uint256 x1, uint256 y1) public pure
         returns(uint256 x2, uint256 y2)
-
+    ```
+    
 * To run double a point run:
-
+    ```
     function twice(uint256 x0, uint256 y0) public pure
         returns(uint256 x1, uint256 y1)
-  
+    ```
 
 * To multiply a point in some power of two scalar run:
-
+    ```
     function multiplyPowerBase2(uint256 x0, uint256 y0, 
                                 int exp) public pure
         returns(uint256 x1, uint256 y1)
-
+    ```
 
 
 ### Notes
