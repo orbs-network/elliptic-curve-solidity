@@ -28,6 +28,13 @@ In the specific contract the curve is alt-bn128 but it works for any curve.
         returns(uint256 x1, uint256 y1)
     ```
 
+* To multiply a point in any scalar run:
+    ```
+    function multiplyScalar(uint256 x0, uint256 y0,
+                            uint scalar) public pure
+        returns(uint256 x1, uint256 y1)
+    ```
+
 
 ### Notes
 
