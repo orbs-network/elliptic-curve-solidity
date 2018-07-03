@@ -6,7 +6,7 @@ In the specific contract the curve is alt-bn128 but it works for any curve.
 
 
 
-#### Run
+### Run
 
 * To run points addition simply run: 
     ```
