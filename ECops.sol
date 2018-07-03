@@ -60,6 +60,14 @@ contract ECops {
     }
 
 
+    // Returns the zero curve in affine coordinates
+    function zeroAffine() public pure 
+        returns(uint256 x, uint256 y)
+    {
+        return (0,0);
+    }
+
+
     // Checks if the curve is the zero curve
     function isZeroCurve(uint256 x0, uint256 y0) public pure
         returns(bool isZero)
@@ -71,7 +79,7 @@ contract ECops {
     }
     
 
-    // Double an eliptic curve point
+    // Double an elliptic curve point
     // https://www.nayuki.io/page/elliptic-curve-point-addition-in-projective-coordinates
     function twiceProj(uint256 x0, uint256 y0, uint256 z0) public pure
         returns(uint256 x1, uint256 y1, uint256 z1)
@@ -81,7 +89,7 @@ contract ECops {
         uint256 v;
         uint256 w;
 
-        if(isZeroCurve(x0, y0)){
+        if(isZeroCurve(x0, y0)) {
             return zeroProj();
         }
 
@@ -115,14 +123,10 @@ contract ECops {
 
         z1 = mulmod(u, u, n);
         z1 = mulmod(z1, u, n);
-
-
-
     }
 
 
-
-    // Add eliptic curve points
+    // Add elliptic curve points
     // https://www.nayuki.io/page/elliptic-curve-point-addition-in-projective-coordinates
     function addProj(uint256 x0, uint256 y0, uint256 z0,
                      uint256 x1, uint256 y1, uint256 z1) public pure
@@ -133,10 +137,10 @@ contract ECops {
         uint256 u0;
         uint256 u1;
 
-        if (isZeroCurve(x0, y0)){
+        if (isZeroCurve(x0, y0)) {
             return (x1, y1, z1);
         } 
-        else if (isZeroCurve(x1, y1)){
+        else if (isZeroCurve(x1, y1)) {
             return (x0, y0, z0);
         }
         
@@ -194,7 +198,7 @@ contract ECops {
     }
     
 
-    // Add two eliptic curve points (affine coordinates)
+    // Add two elliptic curve points (affine coordinates)
     function add(uint256 x0, uint256 y0,
                  uint256 x1, uint256 y1) public pure
         returns(uint256 x2, uint256 y2)
@@ -206,7 +210,7 @@ contract ECops {
     }
 
 
-    // Double an eliptic curve point (affine coordinates)
+    // Double an elliptic curve point (affine coordinates)
     function twice(uint256 x0, uint256 y0) public pure
         returns(uint256 x1, uint256 y1)
     {
@@ -217,19 +221,63 @@ contract ECops {
     }
 
 
-    // Multiple an eliptic curve point in a 2 power base (i.e., (2^exp)*P))
+    // Multiple an elliptic curve point in a 2 power base (i.e., (2^exp)*P))
     function multiplyPowerBase2(uint256 x0, uint256 y0, 
-                                int exp) public pure
+                                uint exp) public pure
         returns(uint256 x1, uint256 y1)
     {
-        uint256 tempX = x0;
-        uint256 tempY = y0;
-        uint256 tempZ = 1;
+        uint256 base2X = x0;
+        uint256 base2Y = y0;
+        uint256 base2Z = 1;
 
-        for(int i = 0; i < exp; i++) {
-            (tempX, tempY, tempZ) = twiceProj(tempX, tempY, tempZ);
+        for(uint i = 0; i < exp; i++) {
+            (base2X, base2Y, base2Z) = twiceProj(base2X, base2Y, base2Z);
         }
-        return toAffinePoint(tempX, tempY, tempZ);
+        return toAffinePoint(base2X, base2Y, base2Z);
+    }
+
+
+    // Multiply an elliptic curve point in a scalar
+    function multiplyScalar(uint256 x0, uint256 y0,
+                            uint scalar) public pure
+        returns(uint256 x1, uint256 y1)
+    {
+        
+
+        if(scalar == 0) {
+            return zeroAffine();
+        }
+        else if (scalar == 1) {
+            return (x0, y0);
+        }
+        else if (scalar == 2) {
+            return twice(x0, y0);
+        }
+
+        uint256 base2X = x0;
+        uint256 base2Y = y0;
+        uint256 base2Z = 1;
+        uint256 z1 = 1;
+        x1 = x0;
+        y1 = y0;
+
+        if(scalar%2 == 0) {
+            x1 = y1 = 0;
+        }
+
+        scalar = scalar >> 1;
+
+        while(scalar > 0) {
+            (base2X, base2Y, base2Z) = twiceProj(base2X, base2Y, base2Z);
+
+            if(scalar%2 == 1) {
+                (x1, y1, z1) = addProj(base2X, base2Y, base2Z, x1, y1, z1);
+            }
+
+            scalar = scalar >> 1;
+        }
+
+        return toAffinePoint(x1, y1, z1);
     }
     
 }
