@@ -4,11 +4,15 @@ pragma solidity ^0.4.0;
 contract ECops {
     
     
-    uint256 constant n = 0x30644E72E131A029B85045B68181585D97816A916871CA8D3C208C16D87CFD47;
+    //uint256 constant n = 0x30644E72E131A029B85045B68181585D97816A916871CA8D3C208C16D87CFD47;
+    uint256 constant n = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF;
                          
-    uint256 constant a = 0;
-    uint256 constant b = 3;
+    //uint256 constant a = 0;
+    //uint256 constant b = 3;
     
+    uint256 constant a = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC;
+
+    uint256 constant b = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B;
 
     
     // Returns the inverse in the field of modulo n 
